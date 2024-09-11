@@ -89,6 +89,8 @@ export const UploadForm = ({ onSubmit }) => {
     }
   }, [file]);
 
+
+
   const removeImage = useCallback((index) => {
     setComponentImages((prevImages) =>
       prevImages.filter((_, i) => i !== index)
