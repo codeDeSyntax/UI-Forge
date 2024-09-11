@@ -47,7 +47,7 @@ export default function AdminInterface() {
 
         {/* Main Content */}
         <main
-          className={`flex-1 p-6 transition-transform transform ${
+          className={`flex-1 px-3 py-6 transition-transform transform ${
             isSidebarOpen ? "lg:ml-64" : "ml-0"
           } lg:ml-64`}
         >

@@ -16,17 +16,24 @@ export const Navbar = ({
   return (
     <nav className="bg-primary border-b border-gray-700">
       <div className="px-4 py-2 flex justify-between items-center">
-        <span className="text-lg font-bold text-gray-800 dark:text-white">
-          AdminUI
+        <span className="text-lg font-bold text-gray-200">
+          UIForge
         </span>
 
         <div className="flex items-center">
-          {/* Signed in user */}
-          {isClient && (
+         
+
+          {/* Mobile menu toggle button */}
+          <button onClick={toggleMenu} className="ml-4 p-2 lg:hidden">
+            {isMenuOpen ? <X className="h-6 w-6 text-gray-200" /> : <Menu className="h-6 w-6 text-gray-200" />}
+          </button>
+
+         {/* Signed in user */}
+         {isClient && (
             <>
               <SignedIn>
                 <div className="text-white">
-                  <UserButton showName={true}  />
+                  <UserButton  />
                 </div>
               </SignedIn>
 
@@ -40,11 +47,7 @@ export const Navbar = ({
               </SignedOut>
             </>
           )}
-
-          {/* Mobile menu toggle button */}
-          <button onClick={toggleMenu} className="ml-4 p-2 lg:hidden">
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          
         </div>
       </div>
 

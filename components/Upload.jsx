@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useCallback } from "react";
-import { Plus, X, Image as ImageIcon, Loader } from "lucide-react";
+import React, { useState, useCallback, useEffect } from "react";
+import { Plus, X, Image as ImageIcon, Loader, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { Image } from "cloudinary-react";
@@ -26,22 +26,22 @@ import {
 } from "react-icons/si";
 
 const techIcons = [
-  { name: "React", icon: FaReact, color: "#61DAFB" }, // React blue
-  { name: "Vue", icon: FaVuejs, color: "#42b883" }, // Vue green
-  { name: "Angular", icon: FaAngular, color: "#DD0031" }, // Angular red
-  { name: "Node.js", icon: FaNodeJs, color: "#339933" }, // Node.js green
-  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" }, // TypeScript blue
-  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" }, // JavaScript yellow
-  { name: "Python", icon: FaPython, color: "#3776AB" }, // Python blue
-  { name: "Java", icon: FaJava, color: "#007396" }, // Java blue
-  { name: "Ruby on Rails", icon: SiRubyonrails, color: "#CC0000" }, // Rails red
-  { name: "Django", icon: SiDjango, color: "#092E20" }, // Django green-black
-  { name: "Flask", icon: SiFlask, color: "#000000" }, // Flask black
-  { name: "Spring", icon: SiSpring, color: "#6DB33F" }, // Spring green
-  { name: "PHP", icon: FaPhp, color: "#777BB4" }, // PHP purple
-  { name: "Laravel", icon: SiLaravel, color: "#FF2D20" }, // Laravel red
-  { name: "Express", icon: SiExpress, color: "#f5f5f5" }, // Express black
-  { name: "Docker", icon: FaDocker, color: "#2496ED" }, // Docker blue
+  { name: "React", icon: FaReact, color: "#61DAFB" },
+  { name: "Vue", icon: FaVuejs, color: "#42b883" },
+  { name: "Angular", icon: FaAngular, color: "#DD0031" },
+  { name: "Node.js", icon: FaNodeJs, color: "#339933" },
+  { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+  { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
+  { name: "Python", icon: FaPython, color: "#3776AB" },
+  { name: "Java", icon: FaJava, color: "#007396" },
+  { name: "Ruby on Rails", icon: SiRubyonrails, color: "#CC0000" },
+  { name: "Django", icon: SiDjango, color: "#092E20" },
+  { name: "Flask", icon: SiFlask, color: "#000000" },
+  { name: "Spring", icon: SiSpring, color: "#6DB33F" },
+  { name: "PHP", icon: FaPhp, color: "#777BB4" },
+  { name: "Laravel", icon: SiLaravel, color: "#FF2D20" },
+  { name: "Express", icon: SiExpress, color: "#f5f5f5" },
+  { name: "Docker", icon: FaDocker, color: "#2496ED" },
 ];
 
 export const UploadForm = ({ onSubmit }) => {
@@ -52,6 +52,29 @@ export const UploadForm = ({ onSubmit }) => {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
+  const [showSuccess, setShowSuccess] = useState(true);
+  const [dragActive, setDragActive] = useState(false);
+
+  const handleDrag = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const selectedFile = e.dataTransfer.files[0];
+      setFile(selectedFile);
+      setFilename(selectedFile.name);
+    }
+  }, []);
 
   const handleImageUpload = useCallback((event) => {
     const selectedFile = event.target.files[0];
@@ -75,7 +98,7 @@ export const UploadForm = ({ onSubmit }) => {
         formData
       );
       const newImageUrl = response.data.secure_url;
-      setComponentImages(prevImages => {
+      setComponentImages((prevImages) => {
         const updatedImages = [...prevImages, newImageUrl];
         console.log("Updated componentImages:", updatedImages);
         return updatedImages;
@@ -89,8 +112,6 @@ export const UploadForm = ({ onSubmit }) => {
     }
   }, [file]);
 
-
-
   const removeImage = useCallback((index) => {
     setComponentImages((prevImages) =>
       prevImages.filter((_, i) => i !== index)
@@ -101,20 +122,15 @@ export const UploadForm = ({ onSubmit }) => {
     async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post("/api/newui", {
+        const response = await axios.post("https://uiforge-sage.vercel.app/api/newui", {
           componentName,
           componentCode,
           componentImages,
           tech,
         });
         console.log(response.data);
-
-        // setComponentName("");
-        // setComponentCode("");
-        // setComponentImages([]);
-        // setTech([]);
-
         onSubmit({ componentName, componentCode, componentImages, tech });
+        setShowSuccess(true);
       } catch (error) {
         console.error("Error creating new UI component:", error);
       }
@@ -130,10 +146,17 @@ export const UploadForm = ({ onSubmit }) => {
     );
   };
 
+  useEffect(() => {
+    if (showSuccess) {
+      const timer = setTimeout(() => setShowSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccess]);
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-8 mx-auto p-4 sm:p-6 bg-[#0c0d0e] shadow-lg rounded-xl"
+      className="space-y-8 mx-auto pt-4 sm:p-6 bg-[#0c0d0e] shadow-lg rounded-xl max-w-4xl"
     >
       <div className="space-y-4">
         <label
@@ -147,7 +170,7 @@ export const UploadForm = ({ onSubmit }) => {
           id="componentName"
           value={componentName}
           onChange={(e) => setComponentName(e.target.value)}
-          className="w-full px-4 py-3 bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
+          className="w-full px-4 py-3 text-gray-200 bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
           required
         />
       </div>
@@ -155,7 +178,7 @@ export const UploadForm = ({ onSubmit }) => {
       <div className="space-y-4">
         <label
           htmlFor="componentCode"
-          className="block text-sm font-semibold text-gray-400 "
+          className="block text-sm font-semibold text-gray-400"
         >
           Component Code
           {componentCode.length > 0
@@ -166,8 +189,8 @@ export const UploadForm = ({ onSubmit }) => {
           id="componentCode"
           value={componentCode}
           onChange={(e) => setComponentCode(e.target.value)}
-          rows={10}
-          className="w-full px-4 py-3 bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
+          rows={8}
+          className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
           required
         />
       </div>
@@ -179,7 +202,17 @@ export const UploadForm = ({ onSubmit }) => {
         >
           Component Images
         </label>
-        <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-500 border-dashed rounded-lg dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-400 transition duration-200">
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition duration-200 ${
+            dragActive
+              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900"
+              : "border-gray-500 dark:border-gray-700 hover:border-indigo-500 dark:hover:border-indigo-400"
+          }`}
+        >
           <div className="space-y-1 text-center">
             {filename ? (
               <div className="text-sm text-gray-600 dark:text-gray-400">
@@ -188,7 +221,7 @@ export const UploadForm = ({ onSubmit }) => {
             ) : (
               <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
             )}
-            <div className="flex text-sm  text-gray-600">
+            <div className="flex text-sm text-gray-600">
               <label
                 htmlFor="file-upload"
                 className="relative cursor-pointer bg-white px-2 dark:bg-gray-800 rounded-md font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
@@ -304,6 +337,20 @@ export const UploadForm = ({ onSubmit }) => {
       >
         Submit Component
       </button>
+
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed bottom-40 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center"
+          >
+            <Check className="w-5 h-5 mr-2" />
+            Component created successfully!
+          </motion.div>
+        )}
+      </AnimatePresence>
     </form>
   );
 };
