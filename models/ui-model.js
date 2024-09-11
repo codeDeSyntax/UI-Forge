@@ -11,12 +11,13 @@ export const uiComponent = new Schema({
         type: String,
         required: true,
     },
-    componentImage: {
+    componentImages: {
         type: Array,
     },
-    tags: {
-        type: [String],
+    tech: {
+        type: Array,
     },
+ 
     createdAt: {
         type: Date,
         default: Date.now,

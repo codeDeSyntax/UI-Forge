@@ -1,5 +1,6 @@
 import component from "@/models/ui-model";
 import clientPromise from "@/lib/mongoclient";
+import { NextResponse } from "next/server";
 
 //edit component
 export const editComponent = async (req, res) => {
@@ -10,7 +11,7 @@ export const editComponent = async (req, res) => {
             { _id: new ObjectId(id) },
             { $set: { componentName, componentCode, componentImage, tags } }
         );
-        res.status(200).json({ message: "Component updated successfully" });
+        NextResponse.json({ message: "Component updated successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error updating component", error });
     }
