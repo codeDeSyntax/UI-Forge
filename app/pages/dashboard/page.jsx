@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { UploadForm } from "@/components/Upload";
-import { ComponentList } from "@/components/Uicomponents";
+import ComponentList from "@/components/Uicomponents";
 import { Navbar } from "@/components/Navbar";
 import { Sidebar } from "@/components/Sidebar";
 import ExploreBanner from "@/components/Explore";
@@ -26,7 +26,7 @@ export default function AdminInterface() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background px-3">
       {/* Navbar */}
       <Navbar
         // isDarkMode={isDarkMode}
@@ -51,13 +51,11 @@ export default function AdminInterface() {
             isSidebarOpen ? "lg:ml-64" : "ml-0"
           } lg:ml-64`}
         >
-          <ExploreBanner/>
+          <ExploreBanner />
           {activeView === "upload" && (
             <UploadForm onSubmit={handleComponentSubmit} />
           )}
-          {activeView === "list" && (
-            <ComponentList components={uploadedComponents} />
-          )}
+          {activeView === "list" && <ComponentList />}
         </main>
       </div>
     </div>
