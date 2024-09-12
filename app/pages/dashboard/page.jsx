@@ -26,7 +26,7 @@ export default function AdminInterface() {
   };
 
   return (
-    <div className="min-h-screen bg-background px-3">
+    <div className="min-h-screen bg-background px-1">
       {/* Navbar */}
       <Navbar
         // isDarkMode={isDarkMode}
@@ -47,7 +47,7 @@ export default function AdminInterface() {
 
         {/* Main Content */}
         <main
-          className={`flex-1 px-3 py-6 transition-transform transform ${
+          className={`flex-1 px-2 py-6 transition-transform transform ${
             isSidebarOpen ? "lg:ml-64" : "ml-0"
           } lg:ml-64`}
         >

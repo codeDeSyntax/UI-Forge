@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { SignedIn, SignedOut, UserButton, SignInButton } from "@clerk/nextjs";
 
-export const Navbar = ({
-  isMenuOpen,
-  toggleMenu,
-  setActiveView,
-}) => {
+export const Navbar = ({ isMenuOpen, toggleMenu, setActiveView }) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -16,24 +12,24 @@ export const Navbar = ({
   return (
     <nav className="bg-primary border-b border-gray-700">
       <div className="px-4 py-2 flex justify-between items-center">
-        <span className="text-lg font-bold text-gray-200">
-          UIForge
-        </span>
+        <span className="text-lg font-bold text-gray-200">UIForge</span>
 
         <div className="flex items-center">
-         
-
           {/* Mobile menu toggle button */}
           <button onClick={toggleMenu} className="ml-4 p-2 lg:hidden">
-            {isMenuOpen ? <X className="h-6 w-6 text-gray-200" /> : <Menu className="h-6 w-6 text-gray-200" />}
+            {isMenuOpen ? (
+              <X className="h-6 w-6 text-gray-200" />
+            ) : (
+              <Menu className="h-6 w-6 text-gray-200" />
+            )}
           </button>
 
-         {/* Signed in user */}
-         {isClient && (
+          {/* Signed in user */}
+          {isClient && (
             <>
               <SignedIn>
                 <div className="text-white">
-                  <UserButton  />
+                  <UserButton />
                 </div>
               </SignedIn>
 
@@ -47,15 +43,14 @@ export const Navbar = ({
               </SignedOut>
             </>
           )}
-          
         </div>
       </div>
 
       {/* Mobile menu rendering */}
       {isMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-gray-600 bg-opacity-75">
+        <div className="lg:hidden fixed inset-0 z-50 bg-background ">
           <div className="absolute inset-0 flex justify-center p-4">
-            <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg w-full max-w-sm">
+            <div className="bg-secondary shadow-lg rounded-lg w-full max-w-sm">
               <div className="p-4">
                 <button
                   onClick={toggleMenu}
@@ -70,7 +65,7 @@ export const Navbar = ({
                       toggleMenu();
                       setActiveView("upload");
                     }}
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300"
+                    className="block px-4 py-2 text-sm text-gray-200"
                   >
                     Upload
                   </button>
@@ -79,7 +74,7 @@ export const Navbar = ({
                       toggleMenu();
                       setActiveView("list");
                     }}
-                    className="mt-2 block px-4 py-2 text-sm text-gray-700 dark:text-gray-300"
+                    className="mt-2 block px-4 py-2 text-sm text-gray-200"
                   >
                     Components
                   </button>
