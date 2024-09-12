@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { EditForm } from "./EditForm";
 
 const ComponentList = () => {
   const [components, setComponents] = useState([]);
@@ -29,6 +30,7 @@ const ComponentList = () => {
   const [expandedComponent, setExpandedComponent] = useState(null);
   const [selectedComponent, setSelectedComponent] = useState(null);
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [isEditing , setIsEditing] = useState(false);
   const [showImages, setShowImages] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({});
 
@@ -44,7 +46,7 @@ const ComponentList = () => {
         const initialShowImages = {};
         const initialCurrentImageIndex = {};
         data.forEach((component) => {
-          initialShowImages[component._id] = false;
+          initialShowImages[component._id] = true;
           initialCurrentImageIndex[component._id] = 0;
         });
         setShowImages(initialShowImages);
@@ -78,9 +80,14 @@ const ComponentList = () => {
     console.log("Delete component with id:", id);
   };
 
-  const handleEdit = (id) => {
+  const saveUpdate = (id) => {
     console.log("Edit component with id:", id);
   };
+  
+  const handleEdit = (id) => {
+    setIsEditing(true);
+    setSelectedComponent(components.find((c) => c._id === id));
+  }
 
   const toggleImages = (id) => {
     setShowImages((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -236,6 +243,7 @@ const ComponentList = () => {
         ))}
       </div>
 
+
       <Dialog open={isCodeModalOpen} onOpenChange={setIsCodeModalOpen}>
         <DialogContent className="max-w-[95vw] w-full sm:max-w-4xl bg-gray-800 text-gray-200 p-0">
           <DialogHeader className="px-4 py-2 border-b border-gray-700">
@@ -279,6 +287,27 @@ const ComponentList = () => {
               </SyntaxHighlighter>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isEditing} onOpenChange={setIsEditing}>
+        <DialogContent className="max-w-[95vw] w-full sm:max-w-4xl bg-background text-gray-200 p-0">
+          <DialogHeader className="px-4 py-2 border-b border-gray-700">
+            <DialogTitle className="flex justify-between items-center text-gray-100">
+              <span className="truncate">
+                {selectedComponent?.componentName}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsEditing(false)}
+                className="text-gray-300 hover:text-gray-100"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          <EditForm component={selectedComponent} />
         </DialogContent>
       </Dialog>
     </div>

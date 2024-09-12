@@ -6,10 +6,10 @@ import { NextResponse } from "next/server";
 export const editComponent = async (req, res) => {
     const db = await clientPromise;
     try {
-        const { id, componentName, componentCode, componentImage, tags } = JSON.parse(req.body);
+        const { id, componentName, componentCode, componentImage, tech } = JSON.parse(req.body);
         await db.collection("uiComponent").updateOne(
             { _id: new ObjectId(id) },
-            { $set: { componentName, componentCode, componentImage, tags } }
+            { $set: { componentName, componentCode, componentImage, tech } }
         );
         NextResponse.json({ message: "Component updated successfully" });
     } catch (error) {
