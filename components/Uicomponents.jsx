@@ -270,7 +270,7 @@ const ComponentList = () => {
             >
               <Copy className="h-4 w-4 mr-2" /> Copy
             </Button>
-            <div className="max-h-[60vh] overflow-auto mt-8">
+            <div className="max-h-[60vh] overflow-auto mt-8" >
               <SyntaxHighlighter
                 language="jsx"
                 style={vscDarkPlus}

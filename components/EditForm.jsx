@@ -13,6 +13,7 @@ import {
   FaJava,
   FaPhp,
   FaDocker,
+  FaTrash,
 } from "react-icons/fa";
 import {
   SiTypescript,
@@ -44,11 +45,11 @@ const techIcons = [
   { name: "Docker", icon: FaDocker, color: "#2496ED" },
 ];
 
-export const EditForm = ({component}) => {
-  const [componentName, setComponentName] = useState("");
-  const [componentCode, setComponentCode] = useState("");
-  const [componentImages, setComponentImages] = useState([]);
-  const [tech, setTech] = useState([]);
+export const EditForm = ({ component }) => {
+  const [componentName, setComponentName] = useState(component.componentName);
+  const [componentCode, setComponentCode] = useState(component.componentCode);
+  const [componentImages, setComponentImages] = useState(component.componentImages);
+  const [tech, setTech] = useState(component.tech);
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
@@ -98,11 +99,7 @@ export const EditForm = ({component}) => {
         formData
       );
       const newImageUrl = response.data.secure_url;
-      setComponentImages((prevImages) => {
-        const updatedImages = [...prevImages, newImageUrl];
-        console.log("Updated componentImages:", updatedImages);
-        return updatedImages;
-      });
+      setComponentImages((prevImages) => [...prevImages, newImageUrl]);
       setFile(null);
       setFilename("");
     } catch (error) {
@@ -118,36 +115,35 @@ export const EditForm = ({component}) => {
     );
   }, []);
 
+  const toggleTech = useCallback((techName) => {
+    setTech((prevTech) =>
+      prevTech.includes(techName)
+        ? prevTech.filter((t) => t !== techName)
+        : [...prevTech, techName]
+    );
+  }, []);
+
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       try {
         const response = await axios.post(
-          "https://uiforge-sage.vercel.app/api/newUi",
+          "https://uiforge-sage.vercel.app/api/editcomponent",
           {
+            id: component._id,
             componentName,
             componentCode,
             componentImages,
             tech,
-            component._id,
           }
         );
-        
         setShowSuccess(true);
       } catch (error) {
-        console.error("Error creating new UI component:", error);
+        console.error("Error updating UI component:", error);
       }
     },
-    [componentName, componentCode, componentImages, tech]
+    [component._id, componentName, componentCode, componentImages, tech]
   );
-
-  const toggleTech = (techName) => {
-    setTech((prev) =>
-      prev.includes(techName)
-        ? prev.filter((t) => t !== techName)
-        : [...prev, techName]
-    );
-  };
 
   useEffect(() => {
     if (showSuccess) {
@@ -171,7 +167,7 @@ export const EditForm = ({component}) => {
         <input
           type="text"
           id="componentName"
-          value={component.componentName}
+          value={componentName}
           onChange={(e) => setComponentName(e.target.value)}
           className="w-full px-4 py-3 text-gray-200 bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200"
           required
@@ -190,7 +186,7 @@ export const EditForm = ({component}) => {
         </label>
         <textarea
           id="componentCode"
-          value={component.componentCode}
+          value={componentCode}
           onChange={(e) => setComponentCode(e.target.value)}
           rows={8}
           className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
@@ -259,7 +255,7 @@ export const EditForm = ({component}) => {
         </button>
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           <AnimatePresence>
-            {component.componentImages.map((image, index) => (
+            {componentImages.map((image, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -277,10 +273,11 @@ export const EditForm = ({component}) => {
                   alt=""
                 />
                 <button
+                  type="button"
                   onClick={() => removeImage(index)}
                   className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 >
-                  <X className="w-4 h-4" />
+                  <FaTrash className="w-4 h-4" />
                 </button>
               </motion.div>
             ))}
@@ -316,7 +313,7 @@ export const EditForm = ({component}) => {
           Selected Technologies
         </label>
         <div className="flex flex-wrap gap-2">
-          {component.tech.map((techItem) => (
+          {tech.map((techItem) => (
             <span
               key={techItem}
               className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"
@@ -338,7 +335,7 @@ export const EditForm = ({component}) => {
         type="submit"
         className="w-full py-3 bg-secondary text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 text-lg font-semibold"
       >
-        Submit Component
+        Update Component
       </button>
 
       <AnimatePresence>
@@ -350,7 +347,7 @@ export const EditForm = ({component}) => {
             className="fixed bottom-40 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center"
           >
             <Check className="w-5 h-5 mr-2" />
-            Component created successfully!
+            Component updated successfully!
           </motion.div>
         )}
       </AnimatePresence>
