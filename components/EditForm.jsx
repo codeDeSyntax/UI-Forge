@@ -123,12 +123,12 @@ export const EditForm = ({ component }) => {
     );
   }, []);
 
-  const handleSubmit = useCallback(
+  const handleSave = useCallback(
     async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post(
-          "https://uiforge-sage.vercel.app/api/editcomponent",
+        const response = await axios.put(
+          "/api/editcomponent",
           {
             id: component._id,
             componentName,
@@ -154,7 +154,7 @@ export const EditForm = ({ component }) => {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSave}
       className="space-y-8 mx-auto pt-4 sm:p-6 bg-background shadow-lg rounded-xl max-w-4xl h-[450px] overflow-y-scroll no-scrollbar"
     >
       <div className="space-y-4">

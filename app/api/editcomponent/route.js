@@ -1,34 +1,30 @@
 import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongoclient";
+import { NextResponse } from "next/server";
 
-const allowedOrigin = process.env.NODE_ENV === 'production' 
-  ? 'https://uiforge-sage.vercel.app/api/editcomponent'  // Use your real domain
-  : 'http://localhost:3000';  // Use localhost for development
-
-export const editComponent = async (req, res) => {
-  // Set CORS headers dynamically
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight OPTIONS request
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  const db = await clientPromise;
+export async function PUT(req, res) { // Or POST depending on your setup
+    const client = await clientPromise;
+    const db = client.db();
   try {
-    const { id, componentName, componentCode, componentImage, tech } = await req.json();
+    const { id, componentName, componentCode, componentImages, tech } = await req.json();
+
+    if (!id || !componentName || !componentCode || !tech) {
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    }
 
     const objectId = new ObjectId(id); 
+    console.log(objectId);
+    
 
     // Update the component in MongoDB
     await db.collection("uiComponent").updateOne(
       { _id: objectId },
-      { $set: { componentName, componentCode, componentImage, tech } }
+      { $set: { componentName, componentCode, componentImages, tech } }
     );
 
     return NextResponse.json({ message: "Component updated successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Error updating component", error });
+    console.error("Server error:", error); // Log the error on the server side
+    return NextResponse.json({ message: "Error updating component", error });
   }
-};
+}

@@ -1,9 +1,9 @@
 import clientPromise from "@/lib/mongoclient";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  // Test with a simple JSON response
-//   return NextResponse.json({ randomMessage: 'Welcome to testing API on the browser' });
+export async function GET(req,res) {
+  res.setHeader('Cache-Control', 'no-store');
+
   try {
     const client = await clientPromise;
     const db = client.db();
