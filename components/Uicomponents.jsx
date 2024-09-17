@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { EditForm } from "./EditForm";
+import { SkeletonCard } from "./Preview";
 
 const ComponentList = () => {
   const [components, setComponents] = useState([]);
@@ -116,7 +117,7 @@ const ComponentList = () => {
   if (loading)
     return (
       <div className="flex justify-start items-center h-screen text-gray-200">
-        Loading...
+        <SkeletonCard/>
       </div>
     );
   if (error)

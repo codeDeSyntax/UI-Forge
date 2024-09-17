@@ -52,7 +52,7 @@ export const UploadForm = ({ onSubmit }) => {
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
-  const [showSuccess, setShowSuccess] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
   const handleDrag = useCallback((e) => {
