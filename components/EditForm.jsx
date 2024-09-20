@@ -49,6 +49,7 @@ export const EditForm = ({ component }) => {
   const [componentName, setComponentName] = useState(component.componentName);
   const [componentCode, setComponentCode] = useState(component.componentCode);
   const [componentImages, setComponentImages] = useState(component.componentImages);
+  const [description, setDescription] = useState(component?.description);
   const [tech, setTech] = useState(component.tech);
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
@@ -127,12 +128,13 @@ export const EditForm = ({ component }) => {
     async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.put(
+        const response = await axios.patch(
           "/api/editcomponent",
           {
             id: component._id,
             componentName,
             componentCode,
+            description,
             componentImages,
             tech,
           }
@@ -142,7 +144,7 @@ export const EditForm = ({ component }) => {
         console.error("Error updating UI component:", error);
       }
     },
-    [component._id, componentName, componentCode, componentImages, tech]
+    [component._id, componentName, description, componentCode, componentImages, tech]
   );
 
   useEffect(() => {
@@ -188,6 +190,23 @@ export const EditForm = ({ component }) => {
           id="componentCode"
           value={componentCode}
           onChange={(e) => setComponentCode(e.target.value)}
+          rows={8}
+          className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
+          required
+        />
+      </div>
+
+      <div className="space-y-4">
+        <label
+          htmlFor="description"
+          className="block text-sm font-semibold text-gray-400"
+        >
+          Desciption
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           rows={8}
           className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
           required

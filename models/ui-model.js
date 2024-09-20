@@ -11,6 +11,9 @@ export const uiComponent = new Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+    },
     componentImages: {
         type: Array,
     },

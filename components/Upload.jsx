@@ -48,6 +48,7 @@ export const UploadForm = ({ onSubmit }) => {
   const [componentName, setComponentName] = useState("");
   const [componentCode, setComponentCode] = useState("");
   const [componentImages, setComponentImages] = useState([]);
+  const [description , setDescription] = useState("");
   const [tech, setTech] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [file, setFile] = useState(null);
@@ -122,9 +123,10 @@ export const UploadForm = ({ onSubmit }) => {
     async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post("https://uiforge-sage.vercel.app/api/newui", {
+        const response = await axios.post("/api/newui", {
           componentName,
           componentCode,
+          description,
           componentImages,
           tech,
         });
@@ -135,7 +137,7 @@ export const UploadForm = ({ onSubmit }) => {
         console.error("Error creating new UI component:", error);
       }
     },
-    [componentName, componentCode, componentImages, tech, onSubmit]
+    [componentName, componentCode, componentImages,description, tech, onSubmit]
   );
 
   const toggleTech = (techName) => {
@@ -189,6 +191,23 @@ export const UploadForm = ({ onSubmit }) => {
           id="componentCode"
           value={componentCode}
           onChange={(e) => setComponentCode(e.target.value)}
+          rows={8}
+          className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
+          required
+        />
+      </div>
+
+      <div className="space-y-4">
+        <label
+          htmlFor="description"
+          className="block text-sm font-semibold text-gray-400"
+        >
+          Desciption
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           rows={8}
           className="w-full px-4 py-3 text-gray-200 font-mono bg-secondary border border-gray-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 resize-none"
           required

@@ -9,11 +9,12 @@ export async function POST(req) {
   const db = client.db();
 
   try {
-    const { componentName, componentCode, componentImages,tech } = await req.json(); // Parse the JSON request body
+    const { componentName, componentCode,description, componentImages,tech } = await req.json(); // Parse the JSON request body
     const newComponent = new component({
       componentName,
       componentCode,
       componentImages,
+      description,
       tech
     });
     await db.collection("uiComponent").insertOne(newComponent);
