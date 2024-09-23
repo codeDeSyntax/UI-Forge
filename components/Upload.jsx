@@ -123,7 +123,7 @@ export const UploadForm = ({ onSubmit }) => {
     async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.post("/api/newui", {
+        const response = await axios.post("https://uiforge-sage.vercel.app//api/newui", {
           componentName,
           componentCode,
           description,
